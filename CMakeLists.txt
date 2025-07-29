@@ -10,8 +10,8 @@ include_directories(include)
 
 # 收集源文件
 set(SOURCES
-    # src/ChatServer.cpp
-    main.cpp
+    src/ChatServer.cpp
+    test/Chatserver.cpp
 )
 
 # 生成可执行文件
