@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>聊天室</title>
+</head>
+<body>
+    <input id="user" placeholder="用户名">
+    <input id="msg" placeholder="消息内容">
+    <button onclick="sendMsg()">发送</button>
+    <ul id="chat"></ul>
+    <script>
+        function sendMsg() {
+            let user = document.getElementById("user").value;
+            let msg = document.getElementById("msg").value;
+            fetch('/messages', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({user: user, message: msg})
+            }).then(res => res.json()).then(data => {
+                getMessages();
+            });
+        }
+
+        function getMessages() {
+            fetch('/messages')
+                .then(res => res.json())
+                .then(data => {
+                    let chat = document.getElementById("chat");
+                    chat.innerHTML = "";
+                    data.list.forEach(function(item){
+                        let li = document.createElement("li");
+                        li.textContent = item;
+                        chat.appendChild(li);
+                    });
+                });
+        }
+
+        setInterval(getMessages, 1000);
+    </script>
+</body>
+</html>
