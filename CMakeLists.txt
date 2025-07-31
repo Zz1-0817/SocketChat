@@ -9,11 +9,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(include)
 
 # 收集源文件
-set(SOURCES
-    src/ChatServer.cpp
-    test/Chatserver.cpp
+file(GLOB_RECURSE SOURCES
+    "src/ChatServer.cpp"
+    "src/Socket.cpp"
 )
 
 # 生成可执行文件
-add_executable(chat-server ${SOURCES})
+add_executable(chat-server ${SOURCES} test/Chatserver.cpp)
 

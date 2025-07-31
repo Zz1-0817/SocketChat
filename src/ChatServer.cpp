@@ -11,53 +11,22 @@
 static constexpr int MAX_EVENTS = 1024;
 static constexpr int READ_BUFFER = 4096;
 
-ChatServer::ChatServer(uint16_t port_)
-  : serverFd(-1), epollFd(-1), port(port_)
-{}
-
-ChatServer::~ChatServer() {
-    if (serverFd >= 0) close(serverFd);
-    if (epollFd  >= 0) close(epollFd);
-    for (int fd : clients) close(fd);
+ChatServer::ChatServer(uint16_t port_) : Socket(), epollFd(-1)
+{
+    port = port_;
 }
 
-void ChatServer::initServerSocket() {
-    // socket
-    serverFd = ::socket(AF_INET, SOCK_STREAM, 0);
-    if (serverFd < 0) {
-        perror("socket");
-        exit(EXIT_FAILURE);
-    }
-
-    int opt = 1;
-    setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-
-    int flags = fcntl(serverFd, F_GETFL, 0);
-    fcntl(serverFd, F_SETFL, flags | O_NONBLOCK);
-
-    // bind
-    sockaddr_in addr{};
-    addr.sin_family      = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port        = htons(port);
-
-    if (bind(serverFd, (sockaddr*)&addr, sizeof(addr)) < 0) {
-        perror("bind");
-        exit(EXIT_FAILURE);
-    }
-
-    // listen
-    if (listen(serverFd, SOMAXCONN) < 0) {
-        perror("listen");
-        exit(EXIT_FAILURE);
-    }
-
-    std::cout << "ChatServer listening on port " << port << std::endl;
+ChatServer::~ChatServer() {
+    close(fd);
+    close(epollFd);
+    for (int FD : clients) close(FD);
 }
 
 // initial and run the main loop
 void ChatServer::run() {
-    initServerSocket();
+    Socket::set_non_blocking();
+    Socket::bind("127.0.0.1", port);
+    Socket::listen(SOMAXCONN);
 
     // create an epoll instance and add the socket
     epollFd = epoll_create1(0);
@@ -68,13 +37,13 @@ void ChatServer::run() {
 
     epoll_event ev{};
     ev.events   = EPOLLIN; // EPOLLIN: readable event, EPOLLOUT: writable event
-    ev.data.fd  = this->serverFd;
+    ev.data.fd  = this-> fd;
     /*
      * RETURN VALUE
      * When successful,  epoll_ctl()  returns  zero.   When  an  error  occurs,
      * epoll_ctl() returns -1 and errno is set to indicate the error.
      */
-    if (epoll_ctl(epollFd, EPOLL_CTL_ADD, serverFd, &ev) == -1) { // Add server itself
+    if (epoll_ctl(epollFd, EPOLL_CTL_ADD, fd, &ev) == -1) { // Add server itself
         perror("epoll_ctl: serverFd");
         exit(EXIT_FAILURE);
     }
@@ -89,7 +58,7 @@ void ChatServer::run() {
         }
         for (int i = 0; i < n; ++i) {
             auto &e = events[i];
-            if (e.data.fd == this->serverFd) {
+            if (e.data.fd == this -> fd) {
                 handleNewConnection();
             } else if (e.events & (EPOLLIN | EPOLLERR | EPOLLHUP)) {
                 // EPOLLERR: event error, EPOLLHUP: event hang up
@@ -101,17 +70,7 @@ void ChatServer::run() {
 
 void ChatServer::handleNewConnection() {
     while (true) {
-        sockaddr_in clientAddress{};
-        socklen_t   len = sizeof(clientAddress);
-        // accept a connection on a socket
-        int clientFd = accept(serverFd, (sockaddr*)&clientAddress, &len);
-        if (clientFd < 0) {
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                break;
-            }
-            perror("accept");
-            break;
-        }
+        int clientFd = Socket::accept();
 
         int flags = fcntl(clientFd, F_GETFL, 0);
         fcntl(clientFd, F_SETFL, flags | O_NONBLOCK);
@@ -158,8 +117,7 @@ void ChatServer::handleClientMessage(int clientFd) {
             std::cout << "Client disconnected: fd=" << clientFd << std::endl;
             close(clientFd);
             epoll_ctl(epollFd, EPOLL_CTL_DEL, clientFd, nullptr);
-            this->clients.erase(std::remove(this->clients.begin(), this->clients.end(), clientFd),
-                          this->clients.end());
+            std::remove(this->clients.begin(), this->clients.end(), clientFd);
             return;
         }
         std::string msg(buf, cnt);
@@ -168,11 +126,9 @@ void ChatServer::handleClientMessage(int clientFd) {
 }
 
 void ChatServer::broadcastMessage(const std::string &msg, int senderFd) {
-    for (int fd : clients) {
-        if (fd == senderFd) continue;
-        ssize_t sent = ::send(fd, msg.data(), msg.size(), 0);
-        if (sent < 0 && sent != (ssize_t)msg.size()) {
-        }
+    for (int FD : clients) {
+        if (FD == senderFd) continue;
+        ssize_t sent = Socket::send(FD, msg.data(), msg.size());
     }
 }
 

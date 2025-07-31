@@ -3,13 +3,12 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include "Socket.h"
 
-class ChatServer {
+class ChatServer : public Socket {
 private:
-    int         serverFd;
     int         epollFd;
     std::vector<int> clients;
-    uint16_t    port;
 
     void initServerSocket();
     void handleEvents();
