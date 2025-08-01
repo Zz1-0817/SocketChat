@@ -1,11 +1,12 @@
 #pragma once
+#include <TypeDef.h>
+
 #include <string>
 #include <unordered_set>
 #include <vector>
-#include "MessageDef.h"
 
 class ChatRoom {
-public:
+   public:
     ChatRoom(int roomId, const std::string& name);
 
     int getRoomId() const;
@@ -17,19 +18,13 @@ public:
     bool isMember(int userId) const;
     const std::unordered_set<int>& getMembers() const;
 
-    void setAdmin(int userId);
-    int getAdmin() const;
-    bool isAdmin(int userId) const;
-
     void addMessage(const Message& msg);
     const std::vector<Message>& getRecentMessages() const;
 
-private:
+   private:
     int roomId;
     std::string name;
-    int adminId;
 
     std::unordered_set<int> memberIds;
     std::vector<Message> messageHistory;
 };
-

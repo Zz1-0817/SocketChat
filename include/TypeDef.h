@@ -22,3 +22,9 @@ struct Message {
     uint64_t timestamp;
 };
 
+struct User {
+    int id;
+    std::string username;
+    std::string nickname;
+};
+

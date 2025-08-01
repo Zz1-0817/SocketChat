@@ -1,10 +1,10 @@
 #pragma once
-#include <string>
 #include <chrono>
+#include <string>
 
-class UserSession {
-public:
-    UserSession(int socketFd, int userId);
+class Session {
+   public:
+    Session(int socketFd, int userId);
 
     int getUserId() const;
     int getSocketFd() const;
@@ -21,7 +21,7 @@ public:
     bool isDisconnected() const;
     void markDisconnected();
 
-private:
+   private:
     int socketFd;
     int userId;
     bool loggedIn;
@@ -30,4 +30,3 @@ private:
     std::chrono::steady_clock::time_point lastActiveTime;
     std::string nickname;
 };
-

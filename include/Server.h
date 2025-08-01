@@ -1,14 +1,15 @@
 #pragma once
 
+#include <ChatRoom.h>
+#include <Session.h>
+#include <TypeDef.h>
+
 #include <cstdint>
-#include <unordered_map>
 #include <string>
-#include "MessageDef.h"
-#include "UserSession.h"
-#include "ChatRoom.h"
+#include <unordered_map>
 
 class Server {
-public:
+   public:
     Server(uint16_t _port);
     ~Server();
 
@@ -22,13 +23,13 @@ public:
 
     void handleClientMessage(int clientFd);
 
-private:
-    int  serverFd;
-    int  epollFd;
+   private:
+    int serverFd;
+    int epollFd;
     uint16_t port;
     bool running;
 
-    std::unordered_map<int, UserSession> userSessions;
+    std::unordered_map<int, Session> userSessions;
     std::unordered_map<int, ChatRoom> chatRooms;
 
     void routePrivateMessage(const Message& msg);
