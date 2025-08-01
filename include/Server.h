@@ -2,38 +2,17 @@
 
 #include <cstdint>
 #include <unordered_map>
-#include <vector>
 #include <string>
 #include "MessageDef.h"
 #include "UserSession.h"
 #include "ChatRoom.h"
 
-class ChatServer {
-private:
-    int         serverFd;
-    int         epollFd;
-    std::vector<int> clients;
-    uint16_t    port;
-
-    void initServerSocket();
-    void handleEvents();
-    void handleNewConnection();
-    void handleClientMessage(int clientFd);
-    void broadcastMessage(const std::string &msg, int senderFd);
-
+class Server {
 public:
-    explicit ChatServer(uint16_t port);
-    ~ChatServer();
+    Server(uint16_t _port);
+    ~Server();
 
-    void run();
-};
-
-class MessageServer {
-public:
-    MessageServer();
-    ~MessageServer();
-
-    bool start(int port);
+    void start();
     void stop();
 
     void run();
@@ -44,8 +23,9 @@ public:
     void handleClientMessage(int clientFd);
 
 private:
-    int listenFd;
-    int epollFd;
+    int  serverFd;
+    int  epollFd;
+    uint16_t port;
     bool running;
 
     std::unordered_map<int, UserSession> userSessions;
@@ -58,5 +38,5 @@ private:
     void persistMessage(const Message& msg);
 
     std::string serialize(const Message& msg);
-    Message parseMessage(int clientFd);
+    Message parseMessage(std::string raw);
 };
