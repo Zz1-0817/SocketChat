@@ -10,13 +10,13 @@ enum class MessageType {
 };
 
 union Target {
-    int senderId;
     int receiverId;
     int roomId;
 };
 
 struct Message {
     MessageType type;
+    int senderId;
     Target target;
     std::string content;
     uint64_t timestamp;
