@@ -1,8 +1,8 @@
 #include "DataAccessObject/ChatRoom.h"
 
 bool ChatRoomDAO::createRoom(const std::string& name) {
-    return SqlHelper::execute(db_, "INSERT INTO chat_rooms (name) VALUES (?);",
-                              {name});
+    const std::string sql = "INSERT INTO chat_rooms (name) VALUES (?);";
+    return SqlHelper::execute(db_, sql, {name});
 }
 
 std::optional<ChatRoom> ChatRoomDAO::getRoomById(int roomId) {
@@ -28,3 +28,15 @@ bool ChatRoomDAO::deleteRoom(int roomId) {
     return SqlHelper::execute(db_, "DELETE FROM chat_rooms WHERE id = ?;",
                               {std::to_string(roomId)});
 }
+
+std::unordered_set<int> ChatRoomDAO::getJoinedRoomIdsByUser(int userId) {
+    std::string sql = "SELECT room_id FROM room_members WHERE user_id = ?";
+    auto rows = SqlHelper::query(db_, sql, { std::to_string(userId) });
+
+    std::unordered_set<int> roomIds;
+    for (const auto& row : rows) {
+        roomIds.insert(std::stoi(row[0]));
+    }
+    return roomIds;
+}
+

@@ -9,8 +9,8 @@ class MessageDAO {
     explicit MessageDAO(sqlite3* db) : db_(db) {}
 
     bool insertMessage(const Message& msg);
-    std::vector<Message> getMessagesByRoom(int roomId, int limit = 50);
-    std::vector<Message> getMessagesByUser(int userId);
+    std::vector<Message> getRecentMessagesByRoom(int roomId, int limit = 50);
+    std::vector<Message> getRecentMessagesByUsers(int userA, int userB, int limit = 50);
 
    private:
     sqlite3* db_;

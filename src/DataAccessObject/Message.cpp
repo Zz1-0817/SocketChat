@@ -1,36 +1,81 @@
 #include <DataAccessObject/Message.h>
 
 bool MessageDAO::insertMessage(const Message& msg) {
-    return SqlHelper::execute(db_,
-        "INSERT INTO messages (room_id, sender_id, content, timestamp) VALUES (?, ?, ?, ?);",
-        {std::to_string(msg.target), std::to_string(msg.senderId), msg.content, msg.timestamp});
+    std::string sql = R"(
+        INSERT INTO messages (sender, receiver, room_id, timestamp, content, type)
+        VALUES (?, ?, ?, ?, ?, ?);
+    )";
+
+    std::string receiverStr = (msg.type == MessageType::Private)
+                                  ? std::to_string(msg.to)
+                                  : "";
+
+    std::string roomStr = (msg.type == MessageType::Group)
+                              ? std::to_string(msg.to)
+                              : "";
+
+    return SqlHelper::execute(
+        db_, sql,
+        {std::to_string(msg.from), receiverStr, roomStr,
+         std::to_string(msg.timestamp), msg.content,
+         std::to_string(static_cast<int>(msg.type))});
 }
 
-std::vector<Message> MessageDAO::getMessagesByRoom(int roomId, int limit) {
-    auto rows = SqlHelper::query(db_,
-        "SELECT id, room_id, sender_id, content, timestamp FROM messages WHERE room_id = ? ORDER BY id DESC LIMIT ?;",
-        {std::to_string(roomId), std::to_string(limit)});
+std::vector<Message> MessageDAO::getRecentMessagesByRoom(int roomId,
+                                                         int limit) {
+    std::string sql = R"(
+        SELECT sender, content, timestamp, type
+        FROM messages
+        WHERE room_id = ?
+        ORDER BY timestamp DESC
+        LIMIT ?
+    )";
 
-    std::vector<Message> result;
+    auto rows = SqlHelper::query(
+        db_, sql, {std::to_string(roomId), std::to_string(limit)});
+
+    std::vector<Message> messages;
     for (const auto& row : rows) {
-        result.push_back(Message{
-            std::stoi(row[0]), std::stoi(row[1]), std::stoi(row[2]), row[3], row[4]
-        });
+        Message msg;
+        msg.from = std::stoi(row[0]);
+        msg.content = row[1];
+        msg.timestamp = std::stoull(row[2]);
+        msg.type = static_cast<MessageType>(std::stoi(row[3]));
+        msg.to = roomId;
+        messages.push_back(std::move(msg));
     }
-    return result;
+    return messages;
 }
 
-std::vector<Message> MessageDAO::getMessagesByUser(int userId) {
-    auto rows = SqlHelper::query(db_,
-        "SELECT id, room_id, sender_id, content, timestamp FROM messages WHERE sender_id = ?;",
-        {std::to_string(userId)});
+std::vector<Message> MessageDAO::getRecentMessagesByUsers(int userA, int userB, int limit) {
+    std::string sql = R"(
+        SELECT sender, receiver, content, timestamp, type
+        FROM messages
+        WHERE type = ?
+          AND (
+              (sender = ? AND receiver = ?)
+              OR
+              (sender = ? AND receiver = ?)
+          )
+        ORDER BY timestamp DESC
+        LIMIT ?
+    )";
 
-    std::vector<Message> result;
+    auto rows = SqlHelper::query(
+        db_, sql,
+        {std::to_string(static_cast<int>(MessageType::Private)),
+         std::to_string(userA), std::to_string(userB), std::to_string(userB),
+         std::to_string(userA), std::to_string(limit)});
+
+    std::vector<Message> messages;
     for (const auto& row : rows) {
-        result.push_back(Message{
-            std::stoi(row[0]), std::stoi(row[1]), std::stoi(row[2]), row[3], row[4]
-        });
+        Message msg;
+        msg.from = std::stoi(row[0]);
+        msg.to = std::stoi(row[1]);
+        msg.content = row[2];
+        msg.timestamp = std::stoull(row[3]);
+        msg.type = static_cast<MessageType>(std::stoi(row[4]));
+        messages.push_back(std::move(msg));
     }
-    return result;
+    return messages;
 }
-
