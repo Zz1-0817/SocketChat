@@ -1,4 +1,5 @@
-#include "DataAccessObject/User.h"
+#include <DataAccessObject/User.h>
+#include <iostream>
 
 bool UserDAO::insertUser(const User& user) {
     return SqlHelper::execute(
@@ -20,15 +21,17 @@ std::optional<User> UserDAO::getUserByUsername(const std::string& username) {
     }
 
     User user;
-    user.id = std::stoi(row[0]);
+    
+    try {
+        user.id = std::stoi(row[0]);
+    } catch (const std::exception& e) {
+        std::cerr << "[stoi] row[0] (from) failed: '" << row[0] << "'\n";
+        throw;
+    }
+
     user.username = row[1];
     user.nickname = row[2];
     return user;
-
-    if (!rows.empty()) {
-        return User{std::stoi(rows[0][0]), rows[0][1], rows[0][2]};
-    }
-    return std::nullopt;
 }
 
 bool UserDAO::verifyPassword(const std::string& username, const std::string& password) {
@@ -51,3 +54,13 @@ bool UserDAO::deleteUser(int userId) {
     return SqlHelper::execute(db_, "DELETE FROM users WHERE id = ?;",
                               {std::to_string(userId)});
 }
+
+bool UserDAO::updateStatus(int userId, int status) {
+    const std::string sql = "UPDATE users SET status = ? WHERE id = ?";
+    std::vector<std::string> params = {
+        std::to_string(status),
+        std::to_string(userId)
+    };
+    return SqlHelper::execute(db_, sql, params);
+}
+

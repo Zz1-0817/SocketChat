@@ -2,11 +2,25 @@
 
 #include <cstdint>
 #include <string>
+#include <map>
 
 enum class MessageType {
     Private,
     Group,
     System,
+};
+
+enum class Method {
+    GET,
+    POST,
+    PUT,
+    PATCH,
+    DELETE,
+    HEAD,
+    OPTIONS,
+    TRACE,
+    CONNECT,
+    UNKNOWN
 };
 
 struct Message {
@@ -23,3 +37,10 @@ struct User {
     std::string nickname;
 };
 
+struct Request {
+    Request(): method(Method::UNKNOWN) {};
+    Method method;
+    std::string uri;
+    std::map<std::string, std::string> headers;
+    std::string body;
+};

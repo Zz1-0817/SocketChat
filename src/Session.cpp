@@ -1,4 +1,10 @@
 #include <Session.h>
+#include <Token.h>
+
+Session::Session(int socketFd, UserDAO &userDAO, ChatRoomDAO &chatRoomDAO)
+        : userDAO(userDAO), chatRoomDAO(chatRoomDAO) {
+            this->token = TokenGenerator::generate();
+        };
 
 bool Session::login(const std::string &username, const std::string &password) {
     if(!this->userDAO.verifyPassword(username, password)) {
@@ -74,4 +80,16 @@ void Session::setNickname(const std::string &name) {
 
 void Session::markDisconnected() {
     this->disconnected = true;
+}
+
+void Session::setToken(const std::string _token) {
+    this->token = _token;
+}
+
+std::string Session::getUsername() const {
+    return this->username;
+}
+
+std::string Session::getToken() const {
+    return this->token;
 }

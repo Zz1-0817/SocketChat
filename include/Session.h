@@ -7,9 +7,7 @@
 
 class Session {
    public:
-    bool websocket = false;
-    Session(int socketFd, UserDAO &userDAO, ChatRoomDAO &chatRoomDAO)
-        : userDAO(userDAO), chatRoomDAO(chatRoomDAO) {};
+    Session(int socketFd, UserDAO &userDAO, ChatRoomDAO &chatRoomDAO);
 
     bool login(const std::string &username, const std::string &password);
     void logout();
@@ -20,6 +18,7 @@ class Session {
     int getSocketFd() const;
     std::string getUsername() const;
     std::string getNickname() const;
+    std::string getToken() const;
     const std::unordered_set<int> &getJoinedRoomIds() const;
 
     bool isLoggedIn() const;
@@ -27,8 +26,6 @@ class Session {
     bool isInRoom(int roomId) const;
 
     void joinRoom(int roomId);
-    void setLoggedIn(bool status);
-    void setNickname(const std::string &name);
     void markDisconnected();
 
    private:
@@ -36,10 +33,15 @@ class Session {
     int userId;
     std::string username;
     std::string nickname;
+    std::string token;
     bool loggedIn;
     bool disconnected;
     std::unordered_set<int> joinedRoomIds;
 
     UserDAO &userDAO;
     ChatRoomDAO &chatRoomDAO;
+
+    void setLoggedIn(bool status);
+    void setNickname(const std::string &name);
+    void setToken(const std::string token);
 };

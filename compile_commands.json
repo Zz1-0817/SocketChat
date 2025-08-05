@@ -1,1 +1,50 @@
-build/compile_commands.json
+[
+{
+  "directory": "/home/zz1au/projects/SocketChat",
+  "command": "/usr/bin/c++  -I/home/zz1au/projects/SocketChat/include -I/home/zz1au/projects/SocketChat/src -I/home/zz1au/projects/SocketChat/src/DataAccessObject -I/home/zz1au/projects/SocketChat/external -std=gnu++17 -o CMakeFiles/server.dir/src/main.cpp.o -c /home/zz1au/projects/SocketChat/src/main.cpp",
+  "file": "/home/zz1au/projects/SocketChat/src/main.cpp",
+  "output": "CMakeFiles/server.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/zz1au/projects/SocketChat",
+  "command": "/usr/bin/c++  -I/home/zz1au/projects/SocketChat/include -I/home/zz1au/projects/SocketChat/src -I/home/zz1au/projects/SocketChat/src/DataAccessObject -I/home/zz1au/projects/SocketChat/external -std=gnu++17 -o CMakeFiles/server.dir/src/Server.cpp.o -c /home/zz1au/projects/SocketChat/src/Server.cpp",
+  "file": "/home/zz1au/projects/SocketChat/src/Server.cpp",
+  "output": "CMakeFiles/server.dir/src/Server.cpp.o"
+},
+{
+  "directory": "/home/zz1au/projects/SocketChat",
+  "command": "/usr/bin/c++  -I/home/zz1au/projects/SocketChat/include -I/home/zz1au/projects/SocketChat/src -I/home/zz1au/projects/SocketChat/src/DataAccessObject -I/home/zz1au/projects/SocketChat/external -std=gnu++17 -o CMakeFiles/server.dir/src/Session.cpp.o -c /home/zz1au/projects/SocketChat/src/Session.cpp",
+  "file": "/home/zz1au/projects/SocketChat/src/Session.cpp",
+  "output": "CMakeFiles/server.dir/src/Session.cpp.o"
+},
+{
+  "directory": "/home/zz1au/projects/SocketChat",
+  "command": "/usr/bin/c++  -I/home/zz1au/projects/SocketChat/include -I/home/zz1au/projects/SocketChat/src -I/home/zz1au/projects/SocketChat/src/DataAccessObject -I/home/zz1au/projects/SocketChat/external -std=gnu++17 -o CMakeFiles/server.dir/src/ChatRoom.cpp.o -c /home/zz1au/projects/SocketChat/src/ChatRoom.cpp",
+  "file": "/home/zz1au/projects/SocketChat/src/ChatRoom.cpp",
+  "output": "CMakeFiles/server.dir/src/ChatRoom.cpp.o"
+},
+{
+  "directory": "/home/zz1au/projects/SocketChat",
+  "command": "/usr/bin/c++  -I/home/zz1au/projects/SocketChat/include -I/home/zz1au/projects/SocketChat/src -I/home/zz1au/projects/SocketChat/src/DataAccessObject -I/home/zz1au/projects/SocketChat/external -std=gnu++17 -o CMakeFiles/server.dir/src/DataAccessObject/ChatRoom.cpp.o -c /home/zz1au/projects/SocketChat/src/DataAccessObject/ChatRoom.cpp",
+  "file": "/home/zz1au/projects/SocketChat/src/DataAccessObject/ChatRoom.cpp",
+  "output": "CMakeFiles/server.dir/src/DataAccessObject/ChatRoom.cpp.o"
+},
+{
+  "directory": "/home/zz1au/projects/SocketChat",
+  "command": "/usr/bin/c++  -I/home/zz1au/projects/SocketChat/include -I/home/zz1au/projects/SocketChat/src -I/home/zz1au/projects/SocketChat/src/DataAccessObject -I/home/zz1au/projects/SocketChat/external -std=gnu++17 -o CMakeFiles/server.dir/src/DataAccessObject/Helper.cpp.o -c /home/zz1au/projects/SocketChat/src/DataAccessObject/Helper.cpp",
+  "file": "/home/zz1au/projects/SocketChat/src/DataAccessObject/Helper.cpp",
+  "output": "CMakeFiles/server.dir/src/DataAccessObject/Helper.cpp.o"
+},
+{
+  "directory": "/home/zz1au/projects/SocketChat",
+  "command": "/usr/bin/c++  -I/home/zz1au/projects/SocketChat/include -I/home/zz1au/projects/SocketChat/src -I/home/zz1au/projects/SocketChat/src/DataAccessObject -I/home/zz1au/projects/SocketChat/external -std=gnu++17 -o CMakeFiles/server.dir/src/DataAccessObject/Message.cpp.o -c /home/zz1au/projects/SocketChat/src/DataAccessObject/Message.cpp",
+  "file": "/home/zz1au/projects/SocketChat/src/DataAccessObject/Message.cpp",
+  "output": "CMakeFiles/server.dir/src/DataAccessObject/Message.cpp.o"
+},
+{
+  "directory": "/home/zz1au/projects/SocketChat",
+  "command": "/usr/bin/c++  -I/home/zz1au/projects/SocketChat/include -I/home/zz1au/projects/SocketChat/src -I/home/zz1au/projects/SocketChat/src/DataAccessObject -I/home/zz1au/projects/SocketChat/external -std=gnu++17 -o CMakeFiles/server.dir/src/DataAccessObject/User.cpp.o -c /home/zz1au/projects/SocketChat/src/DataAccessObject/User.cpp",
+  "file": "/home/zz1au/projects/SocketChat/src/DataAccessObject/User.cpp",
+  "output": "CMakeFiles/server.dir/src/DataAccessObject/User.cpp.o"
+}
+]

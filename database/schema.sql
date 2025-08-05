@@ -19,9 +19,9 @@ CREATE TABLE IF NOT EXISTS room_members (
 
 CREATE TABLE IF NOT EXISTS messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    sender TEXT NOT NULL,
-    receiver TEXT,
-    room_id TEXT,
+    sender INTEGER NOT NULL,
+    receiver INTEGER,
+    room_id INTEGER,
     timestamp INTEGER NOT NULL,
     content TEXT NOT NULL,
     type INTEGER NOT NULL -- 0: 私聊, 1: 群聊, 2: 系统通知
